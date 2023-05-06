@@ -52,7 +52,7 @@ app.post('/posts', checkAuth, postCreateValidation, handleValErrors, PostControl
 app.delete('/posts/:id', checkAuth, PostController.remove); //удаление одной статьи
 app.patch('/posts/:id', checkAuth, postCreateValidation, handleValErrors, PostController.update); //редактирование одной статьи
 //Роуты
-app.listen(4444, (err) => {
+app.listen(process.env.PORT || 4444, (err) => {
     if (err) {
         return console.log(err);
     }
