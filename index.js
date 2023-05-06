@@ -2,14 +2,17 @@ import express from "express";
 import multer from "multer";
 import cors from "cors";
 import mongoose from "mongoose";
+import * as dotenv from 'dotenv';
 import {registerValidation, loginValidation, postCreateValidation} from "./validations.js"; //валидация
 import checkAuth from "./utils/checkAuth.js";
 import * as UserController from "./controllers/UserController.js";
 import * as PostController from "./controllers/PostController.js";
 import handleValErrors from "./utils/handleValErrors.js";
 
+dotenv.config();
+
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb+srv://admin:123@cluster0.x4e6d4u.mongodb.net/blog?retryWrites=true&w=majority')
+mongoose.connect(process.env.MONGODB_URL)
 .then(()=>console.log('DB ok'))
 .catch((err)=>console.log('DB error', err));
 
@@ -41,9 +44,9 @@ app.post('/upload', checkAuth, upload.single('image'), (req, res) => {
     });
   });
 //работа с статьями
-// app.get('/tags', PostController.getLastTags);
+app.get('/tags', PostController.getLastTags);
 app.get('/posts', PostController.getAll); //получение всех
-// app.get('/posts/tags', PostController.getLastTags);//получение тэгов
+app.get('/posts/tags', PostController.getLastTags);//получение тэгов
 app.get('/posts/:id', PostController.getOne); //получение одной
 app.post('/posts', checkAuth, postCreateValidation, handleValErrors, PostController.create); //создание статьи
 app.delete('/posts/:id', checkAuth, PostController.remove); //удаление одной статьи
